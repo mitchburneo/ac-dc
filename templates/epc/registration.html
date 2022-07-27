@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    EVC | Registration
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'epc/css/login.css' %}">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3/build/web/hack-subset.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="login-container">
+
+            <form method="POST" name="auth_form" action="{% url 'registration' %}">
+                {% csrf_token %}
+                <h1>Регистрация</h1>
+
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
+                    {{ form.username }}
+                    {% for error in form.username.errors %}
+                        <small id="text-danger" class="text-danger">{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">E-Mail</label>
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                        <small id="text-danger" class="text-danger">{{ error }}</small><br>
+                    {% endfor %}
+                    <small class="text-muted">Мы никогда не передаем Ваши персональные данные третьим лицам</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">Пароль</label>
+                    {{ form.password1 }}
+                    {% for error in form.password1.errors %}
+                        <small class="text-danger">{{ error }}</small><br>
+                    {% endfor %}
+                    <small class="form-text">
+                        Пароль может содержать только латинские буквы, цифры и специальные символы<br>
+                        Длина пароля должна быть не менее 8 символов
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">Подтверждение пароля</label>
+                    {{ form.password2 }}
+                    {% for error in form.password2.errors %}
+                        <small class="text-danger">{{ error }}</small><br>
+                    {% endfor %}
+                    <small class="form-text">Повторите, пожалуйста, Ваш пароль.</small>
+                </div>
+
+                {% for non_field_error in form.non_field_errors %}
+                    <p class="text-danger">{{ non_field_error }}</p><br>
+                {% endfor %}
+                <input type="submit" value="Регистрация" name="registration_btn">
+            </form>
+
+            <div class="form-check my-3">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                <label class="form-check-label" for="flexCheckChecked">
+                    Я согласен с <a class="privacy" href="{% url 'privacy' %}" target="_blank">политикой конфиденциальности</a>
+                </label>
+            </div>
+
+            <a role="button" href="{% url 'welcome' %}" class="btn btn-outline-light align-baseline text-center">
+                <i class="bi bi-chevron-left"></i> Вернуться к каталогу
+            </a>
+
+            <a href="{% url 'restore_password' %}">Забыли пароль?</a>
+            <a href="{% url 'login' %}">Вход</a>
+
+            <p class="credentials text-center">Powered by Aftermath Team</p>
+        </div>
+
+
+        {#        <form method="POST" name="registration_form" action="{% url 'registration' %}">#}
+        {##}
+        {#            {% csrf_token %}#}
+        {##}
+        {#            <div class="form-group">#}
+        {#                <label for="{{ form.username.id_for_label }}">USERNAME</label>#}
+        {#                {{ form.username }}#}
+        {#                {% for error in form.username.errors %}#}
+        {#                    <small id="username-help" class="form-text">{{ error }}</small>#}
+        {#                {% endfor %}#}
+        {##}
+        {#                <label for="{{ form.email.id_for_label }}">E-MAIL</label>#}
+        {#                {{ form.email }}#}
+        {#                {% for error in form.email.errors %}#}
+        {#                    <small id="email-help" class="form-text">{{ error }}</small>#}
+        {#                {% endfor %}#}
+        {#                <small class="form-text">We'll never share your personal data with anyone else</small>#}
+        {#            </div>#}
+        {##}
+        {#            <div class="form-group">#}
+        {#                <label for="{{ form.password1.id_for_label }}">PASSWORD</label>#}
+        {#                {{ form.password1 }}#}
+        {#                {% for error in form.password1.errors %}#}
+        {#                    <small class="form-text">{{ error }}</small>#}
+        {#                {% endfor %}#}
+        {#                <small class="form-text">#}
+        {#                    Password can contain only latin letters, digits and special symbols<br>#}
+        {#                    Password length should be 8 at least#}
+        {#                </small>#}
+        {#            </div>#}
+        {#            <div class="form-group">#}
+        {#                <label for="{{ form.password2.id_for_label }}">PASSWORD CONFIRMATION</label>#}
+        {#                {{ form.password2 }}#}
+        {#                {% for error in form.password2.errors %}#}
+        {#                    <small class="form-text">{{ error }}</small>#}
+        {#                {% endfor %}#}
+        {#                <small class="form-text">Please repeat your password</small>#}
+        {#            </div>#}
+        {#            {% for non_field_error in form.non_field_errors %}#}
+        {#                <p class="form-text">{{ non_field_error }}</p>#}
+        {#            {% endfor %}#}
+        {##}
+        {#            <button type="submit" class="btn btn-light btn-block button is-primary" name="registration_btn">CONTINUE#}
+        {#            </button>#}
+        {#        </form>#}
+    </div>
+{% endblock %}

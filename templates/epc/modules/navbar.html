@@ -1,0 +1,39 @@
+{% load static %}
+<nav class="navbar navbar-light bg-white sticky-top flex-md-nowrap navbar-expand-lg" style="z-index: 1500">
+    <div class="container-fluid">
+        <a class="navbar-brand align-self-center evc-logo-capsule bg-white" href="{% url 'welcome' %}">
+            <img src="{% static 'epc/img/evc-logo.png' %}" alt="EVC" class="evc-logo" height="28px">
+            <div class="d-none d-md-inline-block">
+                <span class="vr-custom"></span>
+                <p class="d-inline-block epc-navbar-text">Parts Catalogue</p>
+            </div>
+        </a>
+
+        <ul class="nav pe-3">
+            <li class="nav-item nav-item-right-custom mx-0">
+                <a class="nav-link align-self-center pe-0" href="{% url 'cart_detail' %}">
+                    <div class="d-inline-flex pt-1">
+                        <img src="{% static 'epc/img/cart.png' %}" alt="checkout" class="" height="20px">
+                        <div class="position-relative" id="cart-length-container">
+                            {% if cart|length > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                                      style="background: #e74c3c;"
+                                      id="cart-length">
+                                            {{ cart|length }}
+                                            <span class="visually-hidden"></span>
+                                        </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {#            <li class="nav-item nav-item-right-custom">#}
+            {#                <a class="nav-link align-self-center" href="#">#}
+            {#                    <div class="d-inline-flex">#}
+            {#                        <img src="{% static 'epc/img/main-menu.png' %}" alt="menu" class="">#}
+            {#                    </div>#}
+            {#                </a>#}
+            {#            </li>#}
+        </ul>
+    </div>
+</nav>

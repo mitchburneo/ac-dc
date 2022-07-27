@@ -1,0 +1,639 @@
+@font-face {
+    font-family: 'Gotham Pro Regular';
+    src: url('../fonts/GothamPro.eot');
+    src: url('../fonts/GothamPro.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/GothamPro.woff') format('woff'),
+    url('../fonts/GothamPro.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gotham Pro Bold';
+    src: url('../fonts/GothamPro-Bold.eot');
+    src: url('../fonts/GothamPro-Bold.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/GothamPro-Bold.woff') format('woff'),
+    url('../fonts/GothamPro-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/bg-tesla-4.jpg') no-repeat fixed 50% 45%;
+    background-size: cover;
+    width: 100%;
+
+    margin: 0;
+    object-fit: cover;
+
+    display: grid;
+    grid-template-rows: 1fr auto;
+    /*background: rgb(3,0,30);*/
+    /*background: linear-gradient(-135deg, rgba(3,0,30,1) 0%, rgba(115,3,192,1) 33%, rgba(236,56,188,1) 66%, rgba(253,239,249,1) 100%);*/
+    /*background: linear-gradient(-45deg, #ffffff, #e73c7e, #23a6d5, #23d5ab);*/
+    /*background-size: 400% 400%;*/
+    /*animation: gradient 15s ease infinite;*/
+}
+
+/*@keyframes gradient {*/
+/*	0% {*/
+/*		background-position: 0 50%;*/
+/*	}*/
+/*	50% {*/
+/*		background-position: 100% 50%;*/
+/*	}*/
+/*	100% {*/
+/*		background-position: 0 50%;*/
+/*	}*/
+/*}*/
+
+.container {
+    margin: 0 auto;
+}
+
+.container_main {
+
+}
+
+p {
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+}
+
+.announcement {
+    font-size: 64px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    /*font-family: 'Roboto Slab', serif;*/
+    /*font-family: 'Quicksand', sans-serif;*/
+}
+
+.barcode_link {
+    font-size: 12px;
+    font-family: 'Gotham Pro Regular';
+    font-weight: 200;
+    text-decoration: none;
+    color: #FFF;
+    padding-bottom: 12px;
+}
+
+.barcode_link:hover {
+    color: #bdc3c7;
+}
+
+.barcode {
+    margin-top: 36px;
+    font-size: 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 200;
+    /*font-family: 'Courier Prime', monospace;*/
+    /*font-family: 'Libre Barcode 39 Extended Text', cursive;*/
+    /*font-family: 'Roboto Slab', serif;*/
+    color: #000;
+}
+
+.barcode_white {
+    font-size: 12px;
+    /*font-family: 'IBM Plex Mono', monospace;*/
+    font-family: 'Gotham Pro Regular', serif;
+    font-weight: 200;
+    /*font-family: 'Courier Prime', monospace;*/
+    /*font-family: 'Libre Barcode 39 Extended Text', cursive;*/
+    /*font-family: 'Roboto Slab', serif;*/
+    color: #FFF;
+}
+
+.barcode_dropdown {
+    font-size: 16px;
+    /*font-family: 'Gotham Pro Regular';*/
+    font-family: 'Gotham Pro Regular', serif;
+    font-weight: 200;
+    color: #000;
+}
+
+.logo_small {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.greeting {
+    margin-top: 100px;
+}
+
+.btn {
+    width: 6em;
+}
+
+.models {
+    /*margin-top: 8em;*/
+    user-select: none;
+}
+
+.component-group {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.model-select-btn {
+    font-family: 'Gotham Pro Regular', serif;
+    font-weight: 200;
+    font-size: 146px;
+    /*display:inline-block;*/
+    /*margin: 1em auto;*/
+    text-align: center;
+    text-decoration: none;
+    color: #FFF;
+
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.model-select-btn:hover {
+    color: #FFF; /*#2d3436*/
+    background: #e74c3c;
+}
+
+.evc-logo {
+}
+
+.evc-logo-capsule {
+    margin: 0 0 0 0;
+    box-shadow: none;
+    text-decoration: none;
+}
+
+.epc-navbar-text {
+    font-family: 'Gotham Pro Bold';
+    font-size: 24px;
+    vertical-align: middle;
+    margin: 0;
+    color: #000;
+}
+
+.vr-custom {
+    height: 48px;
+    width: 2px;
+    background-color: #000;
+    border-radius: 99px;
+    margin: 0 8px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.bg-white-custom {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.text-white {
+    font-family: 'IBM Plex Sans';
+    text-decoration: none;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.more-icon {
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+footer {
+    margin-top: 4em;
+}
+
+.columns-custom {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin: 5px 0;
+    align-items: center;
+}
+
+.model-image {
+    -webkit-filter: invert(100%); /* Safari/Chrome */
+    filter: invert(100%);
+}
+
+.column-custom {
+    /*background: rgba(255, 255, 255, 0.4);*/
+    background: rgba(189, 195, 199, .7);
+    flex: 1;
+    border: 1px solid #FFF;
+
+    flex-direction: column;
+
+    min-height: 20vh;
+    /*min-height: 30vh;*/
+    line-height: 150px;
+    margin: 5px;
+    padding: 10px;
+    min-width: 160px;
+    width: 100%;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+
+    height: auto;
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Chrome */
+    display: flex; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    align-items: center; /*Vertical align*/
+    justify-content: center; /*horizontal align*/
+}
+
+.column-custom:hover {
+    border: 1px solid #e74c3c;
+}
+
+.multiple-gen-div a {
+
+}
+
+.dropdown-menu {
+    border: 0;
+    border-radius: 0;
+
+    /*position: absolute;*/
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*width: 100%;*/
+}
+
+.dropdown-menu li {
+    /*display: none;*/
+    /*position: relative;*/
+}
+
+.additional-info-section {
+    margin: 2px;
+    background: rgba(127, 140, 141, 0.6)
+
+}
+
+.additional-info-text {
+    font-family: "Gotham Pro Regular";
+    font-size: 16px;
+    color: #FFF;
+    margin: 10vh 0;
+    padding: 10px;
+    text-align: left;
+}
+
+.info-text-for-models {
+    margin: 0;
+    font-family: "Gotham Pro Regular";
+    font-size: 18px;
+    color: #FFF;
+}
+
+/*div#nav > ul > li{*/
+/*  position: relative;*/
+/*}*/
+
+
+/*.dropdown-menu > li {*/
+/*    width: 100%;*/
+/*}*/
+
+/*.column-custom:first-child {*/
+/*  margin-left: 0;*/
+/*}*/
+
+/*.column-custom:last-child {*/
+/*  margin-right: 0;*/
+/*}*/
+
+@media screen and (max-width: 980px) {
+    .columns-custom .column-custom {
+        /*margin-bottom: 5px;*/
+        flex-basis: 50%;
+    }
+
+    /*.columns-custom .column-custom:nth-last-child(2) {*/
+    /*  margin-right: 0;*/
+    /*}*/
+    /*.columns-custom .column-custom:last-child {*/
+    /*  flex-basis: 100%;*/
+    /*  margin: 0;*/
+    /*}*/
+}
+
+@media screen and (max-width: 1200px) {
+    .model-select-btn {
+        font-size: 100px;
+        line-height: 100px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .model-select-btn {
+        font-size: 84px;
+        line-height: 75px;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .columns-custom .column-custom {
+        flex-basis: 50%;
+        /*margin: 0 0 5px 0;*/
+    }
+
+    .model-select-btn {
+        font-size: 64px;
+        line-height: 75px;
+    }
+}
+
+/* ==================================================================================================== */
+/* SEARCH BOX */
+
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    height: 60px;
+    border-radius: 120px;
+    margin: 1.5em auto 5px;
+    z-index: 1000;
+}
+
+.search-icon, .go-icon {
+    position: absolute;
+    top: 0;
+    height: 60px;
+    width: 86px;
+    line-height: 61px;
+    text-align: center;
+}
+
+.search-icon {
+    left: 0;
+    pointer-events: none;
+    font-size: 1em;
+    will-change: transform;
+    color: #fff;
+
+    /*transform: rotate(-45deg);*/
+    /*-webkit-transform: rotate(-45deg);*/
+    /*-moz-transform: rotate(-45deg);*/
+    /*-o-transform: rotate(-45deg);*/
+    transform-origin: center center;
+    -webkit-transform-origin: center center;
+    -moz-transform-origin: center center;
+    -o-transform-origin: center center;
+    transition: transform 400ms 220ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -webkit-transition: transform 400ms 220ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: transform 400ms 220ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: transform 400ms 220ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+}
+
+.si-rotate {
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+}
+
+.go-icon {
+    right: 0;
+    pointer-events: none;
+    font-size: 1.38em;
+    will-change: opacity;
+    cursor: default;
+    opacity: 0;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transition: opacity 190ms ease-out, transform 260ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -webkit-transition: opacity 190ms ease-out, transform 260ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: opacity 190ms ease-out, transform 260ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: opacity 190ms ease-out, transform 260ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+}
+
+.go-in {
+    color: #FFF;
+    opacity: 1;
+    pointer-events: all;
+    cursor: pointer;
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    transition: opacity 190ms ease-out, transform 260ms 20ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -webkit-transition: opacity 190ms ease-out, transform 260ms 20ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: opacity 190ms ease-out, transform 260ms 20ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: opacity 190ms ease-out, transform 260ms 20ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+}
+
+.search-border {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    height: 60px;
+}
+
+.border {
+    fill: none;
+    stroke: #FFFFFF;
+    stroke-width: 5;
+    stroke-miterlimit: 10;
+}
+
+.border {
+    stroke-dasharray: 740;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 400ms cubic-bezier(0.600, 0.040, 0.735, 0.990);
+    -webkit-transition: stroke-dashoffset 400ms cubic-bezier(0.600, 0.040, 0.735, 0.990);
+    -moz-transition: stroke-dashoffset 400ms cubic-bezier(0.600, 0.040, 0.735, 0.990);
+    -o-transition: stroke-dashoffset 400ms cubic-bezier(0.600, 0.040, 0.735, 0.990);
+}
+
+.border-searching .border {
+    stroke-dasharray: 740;
+    stroke-dashoffset: 459;
+    transition: stroke-dashoffset 650ms cubic-bezier(0.755, 0.150, 0.205, 1.000);
+    -webkit-transition: stroke-dashoffset 650ms cubic-bezier(0.755, 0.150, 0.205, 1.000);
+    -moz-transition: stroke-dashoffset 650ms cubic-bezier(0.755, 0.150, 0.205, 1.000);
+    -o-transition: stroke-dashoffset 650ms cubic-bezier(0.755, 0.150, 0.205, 1.000);
+}
+
+#search {
+    font-family: 'Gotham Pro Regular', sans-serif;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 120px;
+    border: none;
+    background: rgba(255, 255, 255, 0);
+    padding: 0 68px 0 68px;
+    color: #FFFFFF;
+    font-size: 1.32em;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    outline: none;
+}
+
+#search::-webkit-input-placeholder {
+    color: #FFFFFF;
+}
+
+#search::-moz-placeholder {
+    color: #FFFFFF;
+}
+
+#search:-ms-input-placeholder {
+    color: #FFFFFF;
+}
+
+#search:-moz-placeholder {
+    color: #FFFFFF;
+}
+
+#search::-moz-selection {
+    color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+#search::selection {
+    color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+/* ======================================================================================== */
+
+@media (max-width: 768px) {
+    .column-custom {
+        -webkit-animation: none !important;
+        animation: none !important;
+        -webkit-transform: none !important;
+        transform: none !important;
+        transition-property: none !important;
+        opacity: 1 !important;
+    }
+}
+
+.search-results {
+    border-radius: 30px;
+    overflow-x: hidden;
+    text-decoration: none;
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    font-family: "Gotham Pro Regular";
+    color: #2d3436;
+    line-height: 1.2;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 5px 8px 3px rgba(127, 140, 141, 0.25);
+    max-height: 60vh;
+    overflow-y: scroll;
+}
+
+.search-result {
+    padding: 10px 1em 0;
+    vertical-align: middle;
+    text-align: center;
+    align-items: center;
+}
+
+.search-result a {
+    text-decoration: none;
+    color: #2d3436;
+    display: block;
+    width: 100%;
+}
+
+.search-result:hover {
+    cursor: pointer;
+    background: #dfe6e9;
+}
+
+.part-code {
+    vertical-align: middle;
+    font-family: "Gotham Pro Bold";
+}
+
+.part-name {
+    font-size: 10px;
+    vertical-align: middle;
+}
+
+.info {
+    font-size: 10px;
+    background: #e74c3c;
+    border-radius: 20px;
+    padding: 5px 10px;
+    color: #FFF;
+    margin-right: 0;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.part-path {
+    font-size: 10px;
+    background: #ecf0f1;
+    border-radius: 40px;
+    padding: 5px 10px;
+    color: #2d3436;
+    margin-right: 0;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.hr-custom {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(189, 195, 199, 0.3);
+    border-radius: 99px;
+    /*margin: 0 20px;*/
+    /*display: inline-block;*/
+    vertical-align: middle;
+    display: table;
+    margin: 14px auto 0;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+*::-webkit-scrollbar-track {
+    background: #FFF;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #FFF;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.bi-arrow-down-circle::before {
+    vertical-align: text-top;
+}

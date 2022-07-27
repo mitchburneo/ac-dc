@@ -1,0 +1,631 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load svg %}
+{% load humanize %}
+{% load currency %}
+{% block meta %}
+{% endblock %}
+{% block title %}
+    EVC | Parts
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'epc/css/parts.css' %}">
+    <link rel="stylesheet" href="{% static 'epc/css/navbar.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div id="loader">
+        <img id="loader-image" src="{% static 'epc/img/evc-logo.png' %}" alt="Loading..." height="32px"/>
+    </div>
+    <header>
+        {% include 'epc/modules/navbar.html' %}
+    </header>
+
+    <div class="container">
+        <div class="breadcrumbs_custom">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'welcome' %}" class="text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <a href="{% url 'components' model=model_spaceless generation=generation %}"
+                           class="text-decoration-none">{{ model_breadcrumbs|title }} ({{ generation }})</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <a href="{% url 'part_groups' model=model_spaceless generation=generation component=component_full_code %}"
+                           class="text-decoration-none">{{ component }}</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ part_group }}
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <main>
+            <div class="row justify-content-center" style="margin: auto">
+                <div class="col-12 col-lg-6 svg-container sticky svg_box" style="overflow: hidden;">
+                    <button class="btn btn-light reset-btn" type="button">
+                        <i class="bi bi-arrow-repeat reset-svg"></i>
+                    </button>
+                    {% if svg_url %}
+                        {% svg svg_url %}
+                    {% else %}
+                        <img src="{{ MEDIA_URL }}defaults/missing_image.png" alt="" id="zoom">
+                    {% endif %}
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="row">
+{#                    TODO Currency Buttons + Info Text #}
+{#                        <p>#}
+{#                            <button class="btn btn-dark" type="button" data-bs-toggle="collapse"#}
+{#                                    data-bs-target="#collapseExample" aria-expanded="false"#}
+{#                                    aria-controls="collapseExample">#}
+{#                                <i class="bi bi-info-circle"></i>#}
+{#                            </button>#}
+{#                        </p>#}
+{#                        <div class="collapse" id="collapseExample">#}
+{#                            <div class="card card-body d-block">#}
+{#                                You can select multiple rows via <kbd class="code">Ctrl</kbd> + <kbd#}
+{#                                    class="code">Click</kbd>, then just click <kbd class="code">Add Selected to#}
+{#                                Cart</kbd> at the bottom of this table.#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-parts">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col" style="width: 45%;">Название</th>
+                                    <th scope="col">Артикул</th>
+                                    <th scope="col">Стоимость</th>
+                                    <th scope="col">Заказ в количестве</th>
+                                    <th scope="col">Кол-во для ремонта</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for part in parts %}
+                                    <tr data-row-detail-number="{{ part.number }}" class="table-row">
+                                        <td class="table-part-number"
+                                            data-part-number={{ part.number }}>{{ part.number }}</td>
+                                        <td class="table-part-name">
+                                            {{ part.part.part_name }}
+                                            {% if request.user.is_superuser and part.info is not None %}
+                                                <br>{{ part.info }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="table-part-code">
+                                            {{ part.part.part_code }}
+                                        </td>
+                                        {% if part.part.cost == 0 %}
+                                            <td>N/A</td>
+                                        {% else %}
+                                            <td><b>{{ part.part.cost|currency }}</b></td>
+                                        {% endif %}
+                                        <td>
+                                            <div class="quantity-control" data-quantity="">
+                                                <button class="quantity-btn" data-quantity-minus="">
+                                                    <i class="bi bi-dash-circle"></i>
+                                                </button>
+                                                <input type="number" inputmode="numeric"
+                                                       class="quantity-input order-quantity"
+                                                       data-quantity-target=""
+                                                       value="{{ part.part.order_quantity }}"
+                                                       step="{{ part.part.order_quantity }}"
+                                                       min="{{ part.part.order_quantity }}" max=""
+                                                       name="quantity"
+                                                       pattern="[1-9][0-9]{2}">
+                                                <button class="quantity-btn" data-quantity-plus="">
+                                                    <i class="bi bi-plus-circle"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="quantity-control">
+                                                <input type="number" class="quantity-input"
+                                                       value="{{ part.repair_quantity }}" name="disabled" readonly>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if part.part.id in cart_ids %}
+                                                <input type="checkbox"
+                                                       class="btn-check"
+                                                       id="btn-check-outlined-{{ part.part.id }}"
+                                                       autocomplete="off"
+                                                       checked >
+                                                <label class="btn btn-outline-success add-to-cart-inline-btn"
+                                                       for="btn-check-outlined-{{ part.part.id }}"
+                                                       data-part-id="{{ part.part.id }}"
+                                                       data-part-code="{{ part.part.part_code }}"
+                                                       data-pressed="true">
+                                                    <i class="bi bi-cart-x"></i>
+                                                </label>
+                                            {% else %}
+                                                <input type="checkbox" class="btn-check"
+                                                       id="btn-check-outlined-{{ part.part.id }}"
+                                                       autocomplete="off">
+                                                <label class="btn btn-outline-success add-to-cart-inline-btn"
+                                                       for="btn-check-outlined-{{ part.part.id }}"
+                                                       data-part-id="{{ part.part.id }}"
+                                                       data-part-code="{{ part.part.part_code }}"
+                                                       data-pressed="false">
+                                                    <i class="bi bi-cart-plus"></i>
+                                                </label>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div class="toast-container position-fixed">
+        </div>
+        {% csrf_token %}
+        <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top"
+                style="z-index: 1600; visibility: hidden;">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+    <footer class="text-center text-white" style="">
+        <div class="container_main">
+            <section class="mt-1">
+                <div class="row text-center d-flex justify-content-center">
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/team/" class="text-white" target="_blank">О нас</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3 d-none d-md-block">
+                        <h6 class="">
+                            <a href="https://evc.group/service/" class="text-white" target="_blank">Сервис</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/shop/" class="text-white" target="_blank">Магазин</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/cars/" class="text-white" target="_blank">Автомобили</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/contacts/" class="text-white" target="_blank">Контакты</a>
+                        </h6>
+                    </div>
+                </div>
+            </section>
+            <hr class="my-3"/>
+            <section class="text-center mb-3">
+{#                <a href="https://www.facebook.com/evc.group" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-facebook"></i>#}
+{#                </a>#}
+                <a href="https://twitter.com/evc_group" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCSPvsWQVDesAHBzzLkZWHGA" class="text-white mx-4"
+                   target="_blank">
+                    <i class="bi bi-youtube"></i>
+                </a>
+{#                <a href="https://www.instagram.com/evc.group/" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-instagram"></i>#}
+{#                </a>#}
+                <a href="https://github.com/mitchburneo" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-github"></i>
+                </a>
+            </section>
+        </div>
+        <div class="text-center">
+            <p class="barcode_white"><a class="barcode_link" href="https://evc.group" target="_blank">© EVC Group <span
+                    class="year"></span></a></p>
+        </div>
+    </footer>
+
+{% endblock %}
+{% block js %}
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="{% static 'epc/js/d3.v5.min.js' %}" defer></script>
+    <script type="text/javascript">
+        window.addEventListener("pageshow", function (event) {
+            let historyTraversal = event.persisted ||
+                (typeof window.performance != "undefined" && window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                window.location.reload();
+            }
+        });
+
+        $(document).ready(function () {
+
+        });
+
+        let up_btn = document.getElementById("btn-back-to-top");
+
+        window.onscroll = function () {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (
+                document.body.scrollTop > 20 ||
+                document.documentElement.scrollTop > 20
+            ) {
+                up_btn.style.display = "block";
+            } else {
+                up_btn.style.display = "none";
+            }
+        }
+
+        up_btn.addEventListener("click", backToTop);
+
+        function backToTop() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+        let svgCircle = $('.info-circle-overlay');
+        let coloredRow = null;
+        let toggledByClick = false;
+        svgCircle.hover(
+            function () {
+                let partNumber = $(this).data('part-number');
+                coloredRow = $('tbody > tr').filter(function () {
+                    return $('.table-part-number', this).data("part-number") === partNumber;
+                });
+                if (!coloredRow.hasClass('table-selected-part')) {
+                    coloredRow.toggleClass('table-selected-part');
+                }
+            },
+            function () {
+                if (coloredRow && !toggledByClick) {
+                    coloredRow.toggleClass('table-selected-part');
+                    toggledByClick = false;
+                } else if (toggledByClick) toggledByClick = !toggledByClick;
+            }
+        );
+
+        svgCircle.click(function () {
+            let partNumber = $(this).data('part-number');
+            let row = $('tr').filter(function () {
+                return $(this).data("row-detail-number") === partNumber;
+            });
+            if ($(window).width() >= 992) $('html, body').animate({scrollTop: row.offset().top - ($(window).height() / 2)}, 0);
+            else $('html, body').animate({scrollTop: row.offset().top - 50 - $('svg').height()}, 0);
+
+            if (coloredRow) coloredRow.toggleClass('table-selected-part');
+            toggledByClick = true;
+            row.effect("highlight", {color: '#e74c3c'}, 2500);
+            //if (row.hasClass('table-selected-part')) {
+            //    toggledByClick = true;
+            //}
+        });
+
+        let tRow = $('tbody > tr');
+        let coloredCircle = null;
+
+        tRow.hover(function () {
+                let partNumber = $('.table-part-number', this).data('part-number');
+                coloredCircle = $('circle').filter(function () {
+                    return $(this).data("part-number") === partNumber;
+                });
+                coloredCircle.toggleClass('selected-circle-overlay');
+            },
+            function () {
+                if (coloredCircle) coloredCircle.toggleClass('selected-circle-overlay');
+            }
+        );
+
+        let svgBox = $('.svg_box');
+        let svgTransform = {k: 1, x: 0, y: 0};
+
+        $(window).on('resize', function (e) {
+            if ($(this).width() <= 992) {
+                svg.attr('width', svgBox.width());
+                svg.attr('height', svgBox.height());
+            }
+        });
+
+        $(window).on('load', function () {
+            $('#loader').hide();
+        });
+
+        function zoomed() {
+            d3.select('svg > g').attr("transform", d3.event.transform);
+            svgTransform = d3.zoomTransform(d3.select('.zoom').node());
+        }
+
+        let svg, zoom;
+
+        $(window).on('load', function () {
+            let x, y, x_2, y_2;
+            zoom = d3.zoom().scaleExtent([0.3, 100]).on("zoom", zoomed);
+            svg = d3.select("svg").call(zoom);
+            svg.attr('width', svgBox.width());
+            svg.attr('height', svgBox.height());
+
+            svg.on("mousemove", function () {
+                x = d3.mouse(this)[0];
+                y = d3.mouse(this)[1];
+                x_2 = (x - svgTransform.x) / svgTransform.k;
+                y_2 = (y - svgTransform.y) / svgTransform.k;
+            });
+        });
+
+        $('.reset-btn').click(() => {
+            svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(1));
+        });
+
+        tRow.on('click', function (e) {
+
+            if (e.shiftKey) {
+                // TODO Add Shift Key Action, but prevent text selection
+            } else if (e.ctrlKey) {
+                $(this).toggleClass('table-selected-part');
+            } else {
+                if ($('.table-selected-part').length > 1) {
+                    tRow.removeClass('table-selected-part');
+                    $(this).toggleClass('table-selected-part');
+                } else if ($(this).hasClass('table-selected-part')) {
+                    tRow.removeClass('table-selected-part');
+                } else {
+                    tRow.removeClass('table-selected-part');
+                    $(this).toggleClass('table-selected-part');
+                }
+            }
+        });
+
+        $.ajaxSetup({
+            headers: {"X-CSRFToken": $("input[name='csrfmiddlewaretoken']").val()}
+        });
+
+        let toastCount = 0;
+
+        // Stops duplicated request
+        let pendingRequests = {};
+        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+            let key = options.url;
+            {#console.log(key);#}
+            if (!pendingRequests[key]) {
+                pendingRequests[key] = jqXHR;
+            } else {
+                // jqXHR.abort (); // commit triggered after abandonment
+                pendingRequests [key].abort(); // abort the first triggered submission
+            }
+            let complete = options.complete;
+            options.complete = function (jqXHR, textStatus) {
+                pendingRequests[key] = null;
+                if ($.isFunction(complete)) {
+                    complete.apply(this, arguments);
+                }
+            };
+        });
+
+        $('.add-to-cart-inline-btn').on('click', function (e) {
+            let label = $(this);
+            let part_id = $(this).data('part-id');
+            let part_code = $(this).data('part-code');
+            if ($(this).data('pressed')) {
+                $.ajax({
+                    url: "{% url 'cart_remove' %}",
+                    type: "POST",
+                    data: {
+                        part_id: part_id,
+                    },
+                    success: function (result) {
+                        if (result.status === 'error' || $('#cart-length').text() === '') {
+                            // TODO Error Toast
+                            return;
+                        }
+                        {#console.log(JSON.stringify(result));#}
+                        label.html(`<i class="bi bi-cart-plus"></i>`);
+                        if (result['cart-length'] == 0) {
+                            $('#cart-length').remove();
+                        }
+
+                        let t = `<div class="toast align-items-center text-white bg-secondary fade border-0" role="alert" aria-live="assertive" aria-atomic="true" id="toast-${toastCount}">
+                                <div class="d-flex">
+                                  <div class="toast-body">
+                                    Деталь ${part_code} <span class="red-markdown">удалена</span> из <a href="{% url 'cart_detail' %}">корзины</a>
+                                  </div>
+                                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                             </div>`
+
+                        $('.toast-container').append(t);
+
+                        $("#toast-" + toastCount).toast('show');
+                        toastCount++;
+                        $('#cart-length').text(result['cart-length']);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (errorThrown != 'abort') {
+                            alert('application loading failed!');
+                        }
+                    }
+                });
+                $(this).data('pressed', false);
+            } else {
+                let quantity = label.parent().parent().find('.order-quantity').val();
+                console.log(quantity);
+                $.ajax({
+                    url: "{% url 'cart_add' %}",
+                    type: "POST",
+                    data: {
+                        part_id: part_id,
+                        quantity: quantity,
+                        update: false,
+                    },
+                    success: function (result) {
+                        {#console.log(JSON.stringify(result));#}
+                        if (result.status === 'error') {
+                            // TODO Error Toast
+                            return;
+                        }
+                        label.html(`<i class="bi bi-cart-x"></i>`);
+                        if ($('#cart-length').length == 0) {
+                            let s = `<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: #e74c3c;"
+                                           id="cart-length">
+                                           ${result['cart-length']}
+                                           <span class="visually-hidden">unread messages</span>
+                                     </span>`;
+                            $('#cart-length-container').append(s);
+                        }
+
+                        let t = `<div class="toast align-items-center text-white bg-secondary fade border-0" role="alert" aria-live="assertive" aria-atomic="true" id="toast-${toastCount}">
+                                <div class="d-flex">
+                                  <div class="toast-body">
+                                    Деталь ${part_code} <span class="green-markdown">добавлена</span> в <a href="{% url 'cart_detail' %}">корзину</a>
+                                  </div>
+                                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                             </div>`;
+
+                        $('.toast-container').append(t);
+
+                        $("#toast-" + toastCount).toast('show');
+                        toastCount++;
+                        $('#cart-length').text(result['cart-length']);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (errorThrown != 'abort') {
+                            alert('application loading failed!');
+                        }
+                    }
+                });
+                $(this).data('pressed', true);
+            }
+        });
+
+        function updateQuantity(DOMObject, quantity) {
+            let addBtn = DOMObject.parent().parent().parent().find('.add-to-cart-inline-btn');
+            if (addBtn.data('pressed')) {
+                let part_id = addBtn.data('part-id');
+                let part_code = addBtn.data('part-code');
+                $.ajax({
+                    url: "{% url 'cart_add' %}",
+                    type: "POST",
+                    data: {
+                        part_id: part_id,
+                        quantity: quantity,
+                        update: true,
+                    },
+                    success: function (result) {
+                        if (result.status === 'error' || $('#cart-length').text() === '') {
+                            // TODO Error Toast
+                            return;
+                        }
+
+                        let t = `<div class="toast align-items-center text-white bg-secondary fade border-0" role="alert" aria-live="assertive" aria-atomic="true" id="toast-${toastCount}">
+                                <div class="d-flex">
+                                  <div class="toast-body">
+                                    Количество детали ${part_code} <span class="red-markdown"><a href="{% url 'cart_detail' %}">обновлено</a></span></a>
+                                  </div>
+                                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                             </div>`
+
+                        $('.toast-container').append(t);
+
+                        $("#toast-" + toastCount).toast('show');
+                        toastCount++;
+                        $('#cart-length').text(result['cart-length']);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (errorThrown != 'abort') {
+                            alert('application loading failed!');
+                        }
+                    }
+                });
+            }
+        }
+
+        function isNumber(str) {
+            let pattern = /^\d+$/;
+            return pattern.test(str);
+        }
+
+        $('.order-quantity').on('change', function () {
+            let val = $(this).val();
+
+            if (isNumber(val) && val > 0) {
+                updateQuantity($(this), parseInt(val));
+            } else {
+                $(this).val($(this).attr('min'));
+            }
+        });
+
+        $('.order-quantity').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        (function () {
+            "use strict";
+            let jQueryPlugin = (window.jQueryPlugin = function (ident, func) {
+                return function (arg) {
+                    if (this.length > 1) {
+                        this.each(function () {
+                            let $this = $(this);
+
+                            if (!$this.data(ident)) {
+                                $this.data(ident, func($this, arg));
+                            }
+                        });
+
+                        return this;
+                    } else if (this.length === 1) {
+                        if (!this.data(ident)) {
+                            this.data(ident, func(this, arg));
+                        }
+
+                        return this.data(ident);
+                    }
+                };
+            });
+        })();
+
+        (function () {
+            "use strict";
+
+            function quantity($root) {
+                const element = $root;
+                const quantity = $root.first("data-quantity");
+                const quantity_target = $root.find("[data-quantity-target]");
+                const quantity_minus = $root.find("[data-quantity-minus]");
+                const quantity_plus = $root.find("[data-quantity-plus]");
+
+                $(quantity_minus).click(function (e) {
+                    e.stopPropagation();
+                    let quantity_ = parseInt($(this).parent().find('.quantity-input').attr('step'));
+                    let val = parseInt(quantity_target.val());
+                    if (val - quantity_ > 0) quantity_target.val(val - quantity_).change();
+                });
+
+                $(quantity_plus).click(function (e) {
+                    e.stopPropagation();
+                    let quantity_ = parseInt($(this).parent().find('.quantity-input').attr('step'));
+                    let val = parseInt(quantity_target.val());
+                    quantity_target.val(val + quantity_).change();
+                });
+            }
+
+            $.fn.quantity = jQueryPlugin("quantity", quantity);
+            $("[data-quantity]").quantity();
+        })();
+
+    </script>
+{% endblock %}

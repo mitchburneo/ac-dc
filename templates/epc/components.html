@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    EVC | Parts
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'epc/css/components.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <nav class="navbar navbar-light bg-white sticky-top flex-md-nowrap navbar-expand-lg" style="z-index: 1500">
+        <div class="container-fluid">
+            <a class="navbar-brand align-self-center evc-logo-capsule bg-white" href="{% url 'welcome' %}">
+                <img src="{% static 'epc/img/evc-logo-full.png' %}" alt="EVC" class="evc-logo">
+                <div class="d-none d-md-inline-block">
+                    <span class="vr-custom"></span>
+                    <p class="d-inline-block epc-navbar-text">Parts Catalogue</p>
+                </div>
+            </a>
+            <ul class="nav ms-auto px-3">
+                <li class="nav-item nav-item-right-custom">
+                    <a class="nav-link align-self-center" href="#">
+                        <img src="{% static 'epc/img/checkout.png' %}" alt="checkout" class="">
+                    </a>
+                </li>
+                <li class="nav-item nav-item-right-custom">
+                    <a class="nav-link align-self-center" href="#">
+                        <img src="{% static 'epc/img/main-menu.png' %}" alt="menu" class="">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="breadcrumbs_custom">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'welcome' %}"
+                                                                       class="text-decoration-none">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ model|title }} ({{ generation }})</li>
+                </ol>
+            </nav>
+        </div>
+
+{#        <div class="d-flex flex-column flex-shrink-0 p-3 bg-white" style="width: 280px;">#}
+{#            <ul class="nav flex-column mb-auto">#}
+{#                {% for component_group in component_groups %}#}
+{#                    <li class="nav-item">#}
+{#                        <div class="components">#}
+{#                            <a href="#" class="nav-link link-dark ">#}
+{#                                <p class="component-group">{{ component_group.name }}</p>#}
+{#                            </a>#}
+{#                        </div>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        </div>#}
+
+        <div class="row">
+            <div class="col-3 col-xs-4 col-sm-4 col-md-3 col-lg-3 order-0" id="sticky-sidebar">
+                <div class="sticky-top sticky-top-sidebar">
+                    <ul class="nav flex-column mb-auto">
+                        {% for component_group in component_groups %}
+                            <li class="nav-item">
+                                <div class="components">
+                                    <a href="#" class="nav-link link-dark ">
+                                        <p class="component-group">{{ component_group.name }}</p>
+                                    </a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col" id="main">
+                {% for component in components %}
+                    <div class="component_groups"><p class="component-group">{{ component.code|stringformat:"02d" }} - {{ component.name }}</p></div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+{#                    <a href="" class="d-flex align-items-left mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">#}
+{#                        <svg class="bi me-2" width="40" height="32">#}
+{#                            <use href="#bootstrap"></use>#}
+{#                        </svg>#}
+{#                        <span class="fs-4">Component Groups</span>#}
+{#                    </a>#}
+        {#            <hr>#}
+        {#    <hr>#}
+{#            <div class="dropdown">#}
+{#              <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">#}
+{#                <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">#}
+{#                <strong>mdo</strong>#}
+{#              </a>#}
+{#              <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="">#}
+{#                <li><a class="dropdown-item" href="#">New project...</a></li>#}
+{#                <li><a class="dropdown-item" href="#">Settings</a></li>#}
+{#                <li><a class="dropdown-item" href="#">Profile</a></li>#}
+{#                <li><hr class="dropdown-divider"></li>#}
+{#                <li><a class="dropdown-item" href="#">Sign out</a></li>#}
+{#              </ul>#}
+{#            </div>#}
+
+
+
+
+
+{#                        {% if user.is_authenticated  %}#}
+{#                            <div class="row">#}
+{#                                <div class="col-3 component-group-capsule">#}
+{#                                    {% for component_group in component_groups %}#}
+{#                                        <div class="components"><p class="component-group">{{ component_group.code }} - {{ component_group.name }}</p></div>#}
+{#                                    {% endfor %}#}
+{#                                </div>#}
+{#                                <div class="col-9">#}
+{#                                    {% for component in components %}#}
+{#                                        <div class="component_groups"><p class="component-group">{{ component.code|stringformat:"02d" }} - {{ component.name }}</p></div>#}
+{#                                    {% endfor %}#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+    </div>
+{% endblock %}

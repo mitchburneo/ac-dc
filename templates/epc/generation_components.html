@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+{% endblock %}
+{% block title %}
+    EVC | Parts
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'epc/css/generation_components.css' %}">
+    <link rel="stylesheet" href="{% static 'epc/css/navbar.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div id="loader">
+        <img id="loader-image" src="{% static 'epc/img/evc-logo.png' %}" alt="Loading..." height="32px"/>
+    </div>
+    <header>
+        {% include 'epc/modules/navbar_search.html' %}
+    </header>
+
+    <div class="container">
+        <div class="breadcrumbs_custom">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'welcome' %}"
+                                                                       class="text-decoration-none">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ model_breadcrumbs|title }}
+                        ({{ generation }})
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <main>
+
+            <section class="article">
+                <div class="grid">
+                    {% for pic in pics %}
+                        <div class="box" id="{{ pic.component_group.name|cut:" " }}">
+                            <p class="text-dark">{{ pic.component_group.name }}</p>
+                            <img src="{{ MEDIA_URL }}{{ pic.picture }}" class="" alt="...">
+                            <span class="hr-custom mt-4"></span>
+                            {% for component in components %}
+                                {% if component.component_group.code == pic.component_group.code %}
+                                    <div class="component_groups">
+                                        <div class="row">
+                                            <div class="col-1 chevron">
+                                                <i class="bi bi-chevron-right"></i>
+                                            </div>
+                                            <div class="col component-group-capsule">
+                                                <p class="component-group">
+
+                                                    <a href="{% url 'part_groups' model=pic.model.url_code generation=pic.generation.code component=component.url_code %}">
+                                                        {{ component.name }}
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <ul class="nav flex-column mb-auto sticky">
+                {% for component_group in component_groups %}
+                    <li class="nav-item">
+                        <div class="components">
+                            <a href="#{{ component_group.name|cut:" " }}" class="nav-link link-dark sidebar-link">
+                                <p class="component-group">{{ component_group.name }}</p>
+                            </a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </main>
+        <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top" style="z-index: 1600">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+    <footer class="text-center text-white" style="">
+        <div class="container_main">
+            <section class="mt-1">
+                <div class="row text-center d-flex justify-content-center">
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/team/" class="text-white" target="_blank">О нас</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3 d-none d-md-block">
+                        <h6 class="">
+                            <a href="https://evc.group/service/" class="text-white" target="_blank">Сервис</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/shop/" class="text-white" target="_blank">Магазин</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/cars/" class="text-white" target="_blank">Автомобили</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/contacts/" class="text-white" target="_blank">Контакты</a>
+                        </h6>
+                    </div>
+                </div>
+            </section>
+            <hr class="my-3"/>
+            <section class="text-center mb-3">
+{#                <a href="https://www.facebook.com/evc.group" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-facebook"></i>#}
+{#                </a>#}
+                <a href="https://twitter.com/evc_group" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCSPvsWQVDesAHBzzLkZWHGA" class="text-white mx-4"
+                   target="_blank">
+                    <i class="bi bi-youtube"></i>
+                </a>
+{#                <a href="https://www.instagram.com/evc.group/" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-instagram"></i>#}
+{#                </a>#}
+                <a href="https://github.com/mitchburneo" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-github"></i>
+                </a>
+            </section>
+        </div>
+        <div class="text-center">
+            <p class="barcode_white"><a class="barcode_link" href="https://evc.group" target="_blank">© EVC Group <span
+                    class="year"></span></a></p>
+        </div>
+    </footer>
+
+{% endblock %}
+{% block js %}
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+
+        window.addEventListener("pageshow", function (event) {
+            let historyTraversal = event.persisted ||
+                (typeof window.performance != "undefined" && window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                window.location.reload();
+            }
+        });
+
+        $(window).on('load', function () {
+            $('#loader').hide();
+        })
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        $(function () {
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRFToken": csrftoken
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $(".link-dark").click(function () {
+                $($(this).attr("href")).effect("highlight", {color: '#ced6e0'}, 2500);
+            });
+
+            let searchRequest = null;
+            let isData = false;
+
+            let search = $("#search");
+            $('.search-results').fadeOut();
+            search.focus(function () {
+                if (isData) {
+                    $('.search-results').fadeIn();
+                }
+
+            });
+            search.blur(function () {
+                $(".search-box").removeClass("border-searching");
+                $(".search-icon").removeClass("si-rotate");
+
+            });
+
+            search.focusout(function () {
+                {#$('.search-results').fadeOut();#}
+            });
+
+
+            $(document).on('click', function (e) {
+                if ($(e.target).closest('.search-box').length === 0) {
+                    $('.search-results').fadeOut();
+                }
+            });
+
+            search.keyup(function () {
+                if ($(this).val().length >= 3) {
+                    if (searchRequest != null)
+                        searchRequest.abort();
+                    searchRequest = $.ajax({
+                        type: "POST",
+                        url: "{% url 'ajax_get_parts_by_code' %}",
+                        data: {
+                            'code': $(this).val().trim(),
+                            'model': "{{ model_breadcrumbs }}",
+                            'generation': "{{ generation }}"
+                        },
+                        dataType: "text",
+                        success: function (msg) {
+                            let query = JSON.parse(JSON.parse(msg));
+                            isData = true;
+                            $('.search-results').fadeIn().empty();
+
+                            query.forEach(part => {
+                                let partCode = part.code;
+                                let partName = part.name;
+                                let model = part.model;
+                                let generation = part['generation'].split(' - ')[0];
+                                {#let componentGroup = part['component_group'];#}
+                                let component = part['component'];
+                                let partGroup = part['part_group'];
+                                let url = `/catalogue/${part['model_url']}/${part['generation_url']}/${part['component_url']}/${part['part_group_url']}`;
+                                let li = `<li class="search-result"><a href="${url}">
+                                    <span class="part-code">${partCode}</span><span class="info d-inline-block">${model} | ${generation}</span>
+                                    <br>
+                                    <span class="part-name">${partName}</span>
+                                    <br>
+                                    <span class="part-path d-inline-block">${component} <i class="bi bi-chevron-right"></i> ${partGroup}</span>
+                                    <span class="hr-custom"></span>
+                                </a></li>`
+                                $('.search-results').append(li);
+                                {#${componentGroup} <i class="bi bi-chevron-right"></i> #}
+                            })
+                        }
+                    });
+                } else {
+                    isData = false;
+                    $('.search-results').fadeOut();
+                }
+            });
+        });
+        //Get the button
+        let up_btn = document.getElementById("btn-back-to-top");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function () {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (
+                document.body.scrollTop > 20 ||
+                document.documentElement.scrollTop > 20
+            ) {
+                up_btn.style.display = "block";
+            } else {
+                up_btn.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        up_btn.addEventListener("click", backToTop);
+
+        function backToTop() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+        $('.sidebar-link').click(function () {
+            $('.sidebar-link > p').removeClass('uppercase');
+            $('p', this).toggleClass('uppercase');
+        });
+
+    </script>
+{% endblock %}

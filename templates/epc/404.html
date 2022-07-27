@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    EVC | Parts
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'epc/css/404.css' %}">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3/build/web/hack-subset.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row h-100">
+            <div class="col-12">
+                <p class="announcement">¯\_(ツ)_/¯</p>
+                <p class="announcement">ERROR_404</p>
+                <p class="barcode">
+                    <button onclick="window.history.go(-1)" class="btn btn-primary btn-lg">Go Back</button>
+                    {% if user.is_authenticated %}
+                    or
+                    <a href="{% url 'dashboard' username=request.user.username %}" class="btn btn-danger btn-lg">Go Home</a>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

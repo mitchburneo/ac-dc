@@ -1,0 +1,528 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency %}
+{% load pluralize %}
+{% block meta %}
+{% endblock %}
+{% block title %}
+    EVC | Cart
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'cart/css/detail.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div id="loader">
+        <img id="loader-image" src="{% static 'epc/img/evc-logo.png' %}" alt="Loading..." height="32px"/>
+    </div>
+    <header>
+        {% include 'epc/modules/navbar.html' %}
+    </header>
+
+    <div class="container h-auto">
+        <main>
+            {% if cart|length > 0 %}
+                <div class="card">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 cart">
+                            <div class="title">
+                                <div class="row">
+                                    <div class="col">
+                                        <h4><b style="font-family: 'Gotham Pro Bold';">Корзина</b></h4>
+                                    </div>
+                                    <div class="col align-self-center text-end me-auto">
+                                        <p class="px-3 my-0 info" id="cart-length-title">
+                                            {{ cart|length }}
+                                            товар{{ cart|length|pluralize_cart_item }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-parts">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 35%">Название</th>
+                                        <th scope="col">Артикул</th>
+                                        <th scope="col">Стоимость</th>
+                                        <th scope="col">Количество</th>
+                                        <th scope="col">Общая стоимость</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in cart %}
+                                        <tr data-row-detail-number="{{ item.product.id }}" class="table-row">
+                                            <td>
+                                                <p>{{ item.product.part_name }}</p>
+                                            </td>
+                                            <td>
+                                                <p>
+                                                    {{ item.product.part_code }}
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <b>
+                                                    {{ item.product.cost|currency }}
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <div class="quantity-control" data-quantity="">
+                                                    <button class="quantity-btn" data-quantity-minus="">
+                                                        <i class="bi bi-dash-circle"></i>
+                                                    </button>
+                                                    <input type="number" class="quantity-input order-quantity"
+                                                           data-quantity-target=""
+                                                           value="{{ item.quantity }}"
+                                                           step="{{ item.product.order_quantity }}"
+                                                           min="{{ item.product.order_quantity }}"
+                                                           name="quantity">
+                                                    <button class="quantity-btn" data-quantity-plus="">
+                                                        <i class="bi bi-plus-circle"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <b class="total-price-inline">
+                                                    {{ item.total_price|currency }}
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="btn-check"
+                                                       id="btn-check-outlined-{{ item.product.id }}"
+                                                       autocomplete="off">
+                                                <label class="btn btn-outline-danger remove-from-cart-inline-btn"
+                                                       for="btn-check-outlined-{{ item.product.id }}"
+                                                       data-part-id="{{ item.product.id }}"
+                                                       data-part-code="{{ item.product.part_code }}"
+                                                       data-pressed="false">
+                                                    <i class="bi bi-cart-dash"></i>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr class="total">
+                                        <td>
+                                            <b>Итог</b>
+                                        </td>
+                                        <td colspan="3"></td>
+                                        <td colspan="2" class="num" id="total-cost">
+                                            <b id="table-total-cost">
+                                                {{ cart.get_total_price|currency }}
+                                            </b>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="back-to-shop">
+                                <button type="button" class="btn btn-outline-dark align-baseline"
+                                        onclick="window.history.go(-1)">
+                                    <i class="bi bi-chevron-left"></i> Вернуться к каталогу
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 summary">
+                            <div class="" style="">
+                                <div class="title">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 style="font-family: 'Gotham Pro Bold';"><b>Итог</b></h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span class="hr-custom"></span>
+                                <div class="row" style="font-family: 'Gotham Pro Bold';">
+                                    <div class="col">Общая стоимость</div>
+                                    <div class="col text-end" id="summary-total-cost">
+                                        {{ cart.get_total_price|currency }}</div>
+                                </div>
+                                <span class="hr-custom"></span>
+
+                                {% if cart|length > 0 %}
+                                    <button type="button" class="btn btn-outline-light mt-4" data-bs-toggle="modal"
+                                            data-bs-target="#checkoutModal" data-bs-whatever="@mdo">Оформить <i
+                                            class="bi bi-cart-check"></i>
+                                    </button>
+                                    {#                                    <a href="{% url 'order_create' %}" role="button" class="btn btn-outline-light mt-4">#}
+                                    {#                                        Checkout <i class="bi bi-cart-check"></i>#}
+                                    {#                                    </a>#}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row h-100">
+                    <div class="col-12 vertical-center-custom">
+                        <p class="announcement">¯\_(ツ)_/¯</p>
+                        <p class="announcement">Ваша корзина пуста</p>
+                    </div>
+                </div>
+                <div class="row text-center justify-content-center">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-outline-dark align-baseline"
+                                onclick="window.history.go(-1)">
+                            <i class="bi bi-chevron-left"></i> Вернуться в каталог
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkoutModalLabel" style="font-family: 'Gotham Pro Bold'">Детали Заказа</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body checkout-form">
+                    <form method="POST" class="order-form" action="{% url 'order_create' %}">
+                        {% csrf_token %}
+
+                        <div class="form-group row">
+                            <div class="col-6">
+                                <label for="{{ form.first_name.id_for_label }}"><span class="required-mark">*</span>
+                                    Имя</label>
+                                {{ form.first_name }}
+
+                                {% for error in form.first_name.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                            <div class="col-6">
+                                <label for="{{ form.last_name.id_for_label }}"><span class="required-mark">*</span>
+                                    Фамилия</label>
+                                {{ form.last_name }}
+
+                                {% for error in form.last_name.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <label for="{{ form.email.id_for_label }}"><span class="required-mark">*</span>
+                                    Электронная почта</label>
+                                {{ form.email }}
+
+                                {% for error in form.email.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+{#                            <div class="col-3">#}
+{#                                <label>Region</label>#}
+{#                                <select class="select-phone-region" aria-label="Phone">#}
+{#                                    <option value="ru" selected>RU</option>#}
+{#                                    <option value="ua">UA</option>#}
+{#                                    <option value="kz">KZ</option>#}
+{#                                </select>#}
+{#                            </div>#}
+                            <div class="col-12">
+                                <label for="{{ form.phone.id_for_label }}"><span class="required-mark">*</span>
+                                    Телефон</label>
+                                {{ form.phone }}
+
+                                {% for error in form.phone.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <label for="{{ form.address.id_for_label }}">
+                                    Адрес</label>
+                                {{ form.address }}
+
+                                {% for error in form.address.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <label for="{{ form.postal_code.id_for_label }}">
+                                    Индекс</label>
+                                {{ form.postal_code }}
+
+                                {% for error in form.postal_code.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <label for="{{ form.city.id_for_label }}">
+                                    Город доставки</label>
+                                {{ form.city }}
+
+                                {% for error in form.city.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <span class="required-mark">*</span> Обязательные поля
+                        <input type="submit" value="Оформить" name="checkout">
+                    </form>
+                </div>
+                {#                <div class="modal-footer">#}
+                {#                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>#}
+                {#                    <button type="button" class="btn btn-outline-secondary">Order</button>#}
+                {#                </div>#}
+            </div>
+        </div>
+    </div>
+    <footer class="text-center text-white" style="">
+        <div class="container_main">
+            <section class="mt-1">
+                <div class="row text-center d-flex justify-content-center">
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/team/" class="text-white" target="_blank">О нас</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3 d-none d-md-block">
+                        <h6 class="">
+                            <a href="https://evc.group/service/" class="text-white" target="_blank">Сервис</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/shop/" class="text-white" target="_blank">Магазин</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/cars/" class="text-white" target="_blank">Автомобили</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/contacts/" class="text-white" target="_blank">Контакты</a>
+                        </h6>
+                    </div>
+                </div>
+            </section>
+            <hr class="my-3"/>
+            <section class="text-center mb-3">
+{#                <a href="https://www.facebook.com/evc.group" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-facebook"></i>#}
+{#                </a>#}
+                <a href="https://twitter.com/evc_group" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCSPvsWQVDesAHBzzLkZWHGA" class="text-white mx-4"
+                   target="_blank">
+                    <i class="bi bi-youtube"></i>
+                </a>
+{#                <a href="https://www.instagramputty.com/evc.group/" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-instagram"></i>#}
+{#                </a>#}
+                <a href="https://github.com/mitchburneo" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-github"></i>
+                </a>
+            </section>
+        </div>
+        <div class="text-center">
+            <p class="barcode_white"><a class="barcode_link" href="https://evc.group" target="_blank">© EVC Group <span
+                    class="year"></span></a></p>
+        </div>
+    </footer>
+
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        window.addEventListener("pageshow", function (event) {
+            let historyTraversal = event.persisted ||
+                (typeof window.performance != "undefined" && window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                window.location.reload();
+            }
+        });
+
+        let phoneInput = document.getElementById('id_phone');
+
+        $(document).ready(function () {
+
+        });
+
+        $(window).on('load', function () {
+            $('#loader').hide();
+        });
+
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                let c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start !== -1) {
+                    c_start = c_start + c_name.length + 1;
+                    let c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end === -1) c_end = document.cookie.length;
+                    return unescape(document.cookie.substring(c_start, c_end));
+                }
+            }
+            return "";
+        }
+
+        $.ajaxSetup({
+            headers: {"X-CSRFToken": getCookie('csrftoken')}
+        });
+
+        $('.remove-from-cart-inline-btn').on('click', function () {
+            let part_id = $(this).data('part-id');
+            $.ajax({
+                url: "{% url 'cart_remove' %}",
+                type: "POST",
+                data: {
+                    part_id: part_id,
+                },
+                success: function (result) {
+                    {#console.log(JSON.stringify(result))#}
+                    $('.table-row').filter(function () {
+                        return $(this).data("row-detail-number") === part_id;
+                    }).remove();
+                    let totalCost = result['total-price'];
+                    $('#table-total-cost').text(`${totalCost}`);
+                    $('#summary-total-cost').text(`${totalCost}`);
+
+                    if (result['cart-length'] == 0) {
+                        $('#cart-length').remove();
+                        window.location.reload();
+                    } else $('#cart-length').text(result['cart-length']);
+
+                    if ((result['cart-length'] % 10 == 0) || (result['cart-length'] % 10 >= 5) || (result['cart-length'] > 10 && result['cart-length'] < 20)) {
+                        $('#cart-length-title').text(result['cart-length'] + ' товаров');
+                    } else if (result['cart-length'] > 1) {
+                        $('#cart-length-title').text(result['cart-length'] + ' товара');
+                    } else {
+                        $('#cart-length-title').text(result['cart-length'] + ' товар')
+                    }
+                },
+                error: function (error) {
+                    console.error(JSON.stringify(error));
+                },
+            });
+        });
+
+        function updateQuantity(DOMObject, quantity) {
+            let addBtn = DOMObject.parent().parent().parent().find('.remove-from-cart-inline-btn');
+            let totalPriceInline = DOMObject.parent().parent().parent().find('.total-price-inline')
+            let part_id = addBtn.data('part-id');
+
+            $.ajax({
+                url: "{% url 'cart_add' %}",
+                type: "POST",
+                data: {
+                    part_id: part_id,
+                    quantity: quantity,
+                    update: true,
+                },
+                success: function (result) {
+                    if (result.status === 'error' || $('#cart-length').text() === '') {
+                        // TODO Error Toast
+                        return;
+                    }
+
+                    let totalCost = result['total-price'];
+                    let inlineTotalCost = result['inline-total-price'];
+                    $('#table-total-cost').text(`${totalCost}`);
+                    $('#summary-total-cost').text(`${totalCost}`);
+                    totalPriceInline.text(`${inlineTotalCost}`)
+
+                    $('#cart-length').text(result['cart-length']);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (errorThrown != 'abort') {
+                        alert('application loading failed!');
+                    }
+                }
+            });
+
+        }
+
+        function isNumber(str) {
+            let pattern = /^\d+$/;
+            return pattern.test(str);
+        }
+
+        $('.order-quantity').on('change', function () {
+            let val = $(this).val();
+
+            if (isNumber(val) && val > 0) {
+                updateQuantity($(this), parseInt(val));
+            } else {
+                $(this).val($(this).attr('min'));
+            }
+        });
+
+        (function () {
+            "use strict";
+            let jQueryPlugin = (window.jQueryPlugin = function (ident, func) {
+                return function (arg) {
+                    if (this.length > 1) {
+                        this.each(function () {
+                            let $this = $(this);
+
+                            if (!$this.data(ident)) {
+                                $this.data(ident, func($this, arg));
+                            }
+                        });
+
+                        return this;
+                    } else if (this.length === 1) {
+                        if (!this.data(ident)) {
+                            this.data(ident, func(this, arg));
+                        }
+
+                        return this.data(ident);
+                    }
+                };
+            });
+        })();
+
+        (function () {
+            "use strict";
+
+            function quantity($root) {
+                const element = $root;
+                const quantity = $root.first("data-quantity");
+                const quantity_target = $root.find("[data-quantity-target]");
+                const quantity_minus = $root.find("[data-quantity-minus]");
+                const quantity_plus = $root.find("[data-quantity-plus]");
+
+                $(quantity_minus).click(function (e) {
+                    e.stopPropagation();
+                    let quantity_ = parseInt($(this).parent().find('.quantity-input').attr('step'));
+                    let val = parseInt(quantity_target.val());
+                    if (val - quantity_ > 0) quantity_target.val(val - quantity_).change();
+                });
+
+                $(quantity_plus).click(function (e) {
+                    e.stopPropagation();
+                    let quantity_ = parseInt($(this).parent().find('.quantity-input').attr('step'));
+                    let val = parseInt(quantity_target.val());
+                    quantity_target.val(val + quantity_).change();
+                });
+            }
+
+            $.fn.quantity = jQueryPlugin("quantity", quantity);
+            $("[data-quantity]").quantity();
+        })();
+
+        $('.select-phone-region').change(function (e) {
+            let val = $(this).val();
+        });
+
+    </script>
+{% endblock %}

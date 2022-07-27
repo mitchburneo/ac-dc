@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    EVC | Login
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'epc/css/login.css' %}">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3/build/web/hack-subset.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="login-container">
+            <form method="POST" name="auth_form" action="{% url 'login' %}">
+                {% csrf_token %}
+                <h1>Вход</h1>
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">E-Mail | Имя пользователя</label>
+                    {{ form.username }}
+
+                    {% for error in form.username.errors %}
+                        <small id="emailHelp" class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">Пароль</label>
+                    {{ form.password }}
+                    {% for error in form.password.errors %}
+                        <small id="emailHelp" class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                {% for non_field_error in form.non_field_errors %}
+                    <p class="form-text text-danger">{{ non_field_error }}</p>
+                {% endfor %}
+                <input type="submit" value="Войти" name="login_btn">
+            </form>
+
+            <a role="button" href="{% url 'welcome' %}" class="btn btn-outline-light align-baseline text-center">
+                <i class="bi bi-chevron-left"></i> Вернуться к каталогу
+            </a>
+
+            <a href="{% url 'restore_password' %}">Забыли пароль?</a>
+            <a href="{% url 'registration' %}">Регистрация</a>
+
+            <p class="credentials text-center">Powered by Aftermath Team</p>
+        </div>
+
+        {#        <form method="POST" name="auth_form" action="{% url 'login' %}">#}
+        {##}
+        {#            {% csrf_token %}#}
+        {#            <!-- <input type="hidden" name="next" value=""> -->#}
+        {#            <div class="form-group">#}
+        {#                <label for="{{ form.username.id_for_label }}">Enter Your E-Mail or Username</label>#}
+        {#                {{ form.username }}#}
+        {#                <small id="emailHelp" class="form-text textMuted">We'll Never Share Your Personal Data With Anyone Else.</small>#}
+        {#                {% for error in form.username.errors %}#}
+        {#                <small id="emailHelp" class="form-text textMutedRed">{{ error }}</small>#}
+        {#                {% endfor %}#}
+        {#            </div>#}
+        {##}
+        {#            <div class="form-group">#}
+        {#                <label for="{{ form.password.id_for_label }}">Password</label>#}
+        {#                {{ form.password }}#}
+        {#                {% for error in form.password.errors %}#}
+        {#                <small id="emailHelp" class="form-text textMutedRed">{{ error }}</small>#}
+        {#                {% endfor %}#}
+        {#            </div>#}
+        {##}
+        {#            {% for non_field_error in form.non_field_errors %}#}
+        {#                <p class="form-text textMutedRed">{{ non_field_error }}</p>#}
+        {#            {% endfor %}#}
+        {##}
+        {#            <button type="submit" class="btn btn-light btn-block login_btn button is-primary" name="login_btn">Continue</button>#}
+        {#            <a href="{% url 'restore_password' %}">Forget Your Password?</a>#}
+        {#        </form>#}
+    </div>
+{% endblock %}

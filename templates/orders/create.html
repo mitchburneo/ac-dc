@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency %}
+{% block meta %}
+{% endblock %}
+{% block title %}
+    EVC | Checkout
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'orders/css/create.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div id="loader">
+        <img id="loader-image" src="{% static 'epc/img/evc-logo.png' %}" alt="Loading..." height="32px"/>
+    </div>
+    <header>
+        {% include 'epc/modules/navbar.html' %}
+    </header>
+
+    <div class="container">
+        <main>
+            <h1><b>Оформление</b></h1>
+            <div class="row w-75 mx-auto justify-content-center">
+                <div class="col-4">
+                    <form method="POST" class="order-form">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" value="Checkout" name="checkout">
+                    </form>
+                </div>
+                <div class="col-4">
+
+                    <div class="order-info">
+                        <h4><b>Ваш Заказ:</b></h4>
+                        <ul class="order-info">
+                            {% for item in cart %}
+                                <li>
+                                    <div class="row my-2">
+                                        <div class="col-10">{{ item.quantity }}x {{ item.product.part_name }}</div>
+                                        <div class="col-2 text-end">
+                                            <span class="markdown">{{ item.total_price|currency }}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p><b>Сумма: {{ cart.get_total_price|currency }}</b></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer class="text-center text-white" style="">
+        <div class="container_main">
+            <section class="mt-1">
+                <div class="row text-center d-flex justify-content-center">
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/team/" class="text-white" target="_blank">О нас</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3 d-none d-md-block">
+                        <h6 class="">
+                            <a href="https://evc.group/service/" class="text-white" target="_blank">Сервис</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/shop/" class="text-white" target="_blank">Магазин</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/cars/" class="text-white" target="_blank">Автомобили</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/contacts/" class="text-white" target="_blank">Контакты</a>
+                        </h6>
+                    </div>
+                </div>
+            </section>
+            <hr class="my-3"/>
+            <section class="text-center mb-3">
+                <a href="https://www.facebook.com/evc.group" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://twitter.com/evc_group" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCSPvsWQVDesAHBzzLkZWHGA" class="text-white mx-4"
+                   target="_blank">
+                    <i class="bi bi-youtube"></i>
+                </a>
+                <a href="https://www.instagram.com/evc.group/" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://github.com/mitchburneo" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-github"></i>
+                </a>
+            </section>
+        </div>
+        <div class="text-center">
+            <p class="barcode_white"><a class="barcode_link" href="https://evc.group" target="_blank">© EVC Group <span
+                    class="year"></span></a></p>
+        </div>
+    </footer>
+
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        $(window).on('load', function () {
+            $('#loader').hide();
+        });
+    </script>
+{% endblock %}

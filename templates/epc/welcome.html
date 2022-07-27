@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    EVC | Parts
+{% endblock %}
+{% block include_css %}
+    <link rel="stylesheet" href="{% static 'epc/css/welcome.css' %}">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3/build/web/hack-subset.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+    <div class="container container_main">
+        <nav class="navbar navbar-light flex-md-nowrap navbar-expand-lg my-4">
+            <div class="container-fluid justify-content-center">
+                <div class="row align-items-center flex-nowrap">
+                    <a class="align-self-center evc-logo-capsule w-auto" href="{% url 'welcome' %}" style="padding: 0 10px">
+                        <img src="{% static 'epc/img/evc-logo-full.png' %}" alt="EVC" class="evc-logo" height="28px">
+                    </a>
+
+                    <div class="d-inline-block w-auto px-0 me-4">
+                        <span class="vr-custom"></span>
+                        <p class="d-none d-md-inline-block epc-navbar-text">Parts Catalogue</p>
+                        <p class="d-md-none d-inline-block epc-navbar-text">Parts</p>
+                    </div>
+
+                    {% if not request.user.is_authenticated %}
+                        <div class="d-inline-flex justify-content-center px-0 me-3 ms-1 w-auto">
+                            <a class="nav-link align-self-center" href="{% url 'login' %}" style="text-align: center; padding: 0 !important;">
+                                <img src="{% static 'epc/img/sign-in.png' %}" alt="sign-in" class="" width="38px" height="38px">
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="d-inline-flex justify-content-center px-0 me-3 ms-1 w-auto">
+                            <a class="nav-link align-self-center" href="{% url 'logout' %}" style="text-align: center; padding: 0 !important;">
+                                <img src="{% static 'epc/img/sign-out.png' %}" alt="sign-out" class="" width="38px" height="38px">
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if cart|length > 0 %}
+                        <a class="nav-link align-self-center d-inline-flex mx-0 w-25" href="{% url 'cart_detail' %}" style="vertical-align: middle;">
+                            <img src="{% static 'epc/img/cart.png' %}" alt="checkout" class="" height="20px">
+                            <div class="position-relative" id="cart-length-container">
+                                {% if cart|length > 0 %}
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: #e74c3c;"
+                                          id="cart-length">
+                                                {{ cart|length }}
+                                                <span class="visually-hidden"></span>
+                                            </span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <div class="search-box">
+            <div class="search-icon"><i class="fa fa-search search-icon"></i></div>
+            <div class="search-form">
+                <input type="text" placeholder="Номер запчасти" id="search" autocomplete="off">
+            </div>
+            <svg class="search-border" xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+                 x="0px" y="0px" viewBox="0 0 671 111" style="enable-background:new 0 0 671 111;"
+                 xml:space="preserve">
+                <path class="border" d="M335.5,108.5h-280c-29.3,0-53-23.7-53-53v0c0-29.3,23.7-53,53-53h280"/>
+                <path class="border" d="M335.5,108.5h280c29.3,0,53-23.7,53-53v0c0-29.3-23.7-53-53-53h-280"/>
+            </svg>
+            <div class="go-icon"><i class="far fa-times"></i></div>
+            <ul class="search-results">
+            </ul>
+        </div>
+
+        <div class="row align-items-center justify-content-center">
+            <section class="" style="margin: 2em 0;">
+                <h4 class="text-center info-text-for-models">
+                    Выберите вашу Tesla
+                </h4>
+            </section>
+        </div>
+
+        <div class="row align-items-center models">
+            <section class="columns-custom">
+                {% for model, gen_array in models.items %}
+                    {% if gen_array|length > 1 %}
+                        <div class="col-6 col-xs-6 col-sm-6 col-md col-lg d-flex justify-content-center multiple-gen-div">
+                            <a class="column-custom model-select-btn multiple-gen-btn align-middle btn-block dropdown-toggle"
+                               role="button" id="dropdown_{{ model.spaceless_name }}" data-bs-toggle="dropdown"
+                               aria-expanded="false" data-model_id="{{ model.pk }}">
+                                {{ model.url_code|upper }}
+                                <img src="{{ MEDIA_URL }}{{ model.minimal_picture_path }}" alt="..." height="100px"
+                                     class="model-image">
+
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdown_{{ model.spaceless_name }}">
+                                {% for gen in gen_array %}
+                                    <li>
+                                        <a class="dropdown-item barcode_dropdown"
+                                           href="{% url 'components' model=model.url_code generation=gen.1 %}">{{ gen.0 }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="col-6 col-xs-6 col-sm-6 col-md col-lg d-flex justify-content-center single-gen-div">
+                            <a href="{% url 'components' model=model.url_code generation=gen_array.0.1 %}"
+                               class="column-custom model-select-btn btn-block single-gen-btn"
+                               data-model_id="{{ model.pk }}" data-gen-name="{{ gen_array.0.0 }}">
+                                {{ model.url_code|upper }}
+                                <img src="{{ MEDIA_URL }}{{ model.minimal_picture_path }}" alt="..." height="100px"
+                                     class="model-image">
+
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </section>
+        </div>
+        <div>
+            <section class="additional-info-section" hidden>
+                <p class="additional-info-text">
+                    It is a long established fact that a reader will be distracted by the readable content of a page
+                    when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+                    distribution of letters, as opposed to using 'Content here, content here', making it look like
+                    readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their
+                    default model text, and a search for 'lorem ipsum' will uncover many web sites still in their
+                    infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose
+                    (injected humour and the like).
+                </p>
+            </section>
+        </div>
+    </div>
+    <footer class="text-center text-white" style="">
+        <div class="container">
+            <section class="mt-1">
+                <div class="row text-center d-flex justify-content-center">
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/team/" class="text-white" target="_blank">О нас</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3 d-none d-md-block">
+                        <h6 class="">
+                            <a href="https://evc.group/service/" class="text-white" target="_blank">Сервис</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/shop/" class="text-white" target="_blank">Магазин</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/cars/" class="text-white" target="_blank">Автомобили</a>
+                        </h6>
+                    </div>
+                    <div class="col-md-2 col-3">
+                        <h6 class="">
+                            <a href="https://evc.group/contacts/" class="text-white" target="_blank">Контакты</a>
+                        </h6>
+                    </div>
+                </div>
+            </section>
+            <hr class="my-3"/>
+            <section class="text-center mb-3">
+{#                <a href="https://www.facebook.com/evc.group" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-facebook"></i>#}
+{#                </a>#}
+                <a href="https://twitter.com/evc_group" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCSPvsWQVDesAHBzzLkZWHGA" class="text-white mx-4"
+                   target="_blank">
+                    <i class="bi bi-youtube"></i>
+                </a>
+{#                <a href="https://www.instagram.com/evc.group/" class="text-white mx-4" target="_blank">#}
+{#                    <i class="bi bi-instagram"></i>#}
+{#                </a>#}
+                <a href="https://github.com/mitchburneo" class="text-white mx-4" target="_blank">
+                    <i class="bi bi-github"></i>
+                </a>
+            </section>
+        </div>
+        <div class="text-center">
+            <p class="barcode_white"><a class="barcode_link" href="https://evc.group" target="_blank">© EVC Group <span
+                    class="year"></span></a></p>
+        </div>
+    </footer>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+
+        window.addEventListener("pageshow", function (event) {
+            let historyTraversal = event.persisted ||
+                (typeof window.performance != "undefined" && window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                window.location.reload();
+            }
+        });
+
+        $(document).ready(function () {
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+
+            $(function () {
+                $.ajaxSetup({
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    }
+                });
+            });
+
+            let searchRequest = null;
+            let isData = false;
+            $('.year').text(new Date().getFullYear());
+            $('.multiple-gen-btn').click(function () {
+                {#$('.single-gen-div').remove();#}
+            });
+            let search = $("#search");
+
+            search.focus(function () {
+                $(".search-box").addClass("border-searching");
+                $(".search-icon").addClass("si-rotate");
+                if (isData) {
+                    $('.search-results').fadeIn();
+                }
+            });
+            search.blur(function () {
+                $(".search-box").removeClass("border-searching");
+                $(".search-icon").removeClass("si-rotate");
+            });
+            search.keyup(function () {
+                if ($(this).val().length >= 3) {
+                    // TODO Add go-in icon to go to detailed search
+                    $(".go-icon").addClass("go-in");
+                    if (searchRequest != null)
+                        searchRequest.abort();
+                    searchRequest = $.ajax({
+                        type: "POST",
+                        url: "{% url 'ajax_get_parts_by_code' %}",
+                        data: {
+                            'code': $(this).val().trim()
+                        },
+                        dataType: "text",
+                        success: function (msg) {
+                            let query = JSON.parse(JSON.parse(msg));
+                            isData = true;
+                            $('.search-results').fadeIn().empty();
+
+                            query.forEach(part => {
+                                let partCode = part.code;
+                                let partName = part.name;
+                                let model = part.model;
+                                let generation = part['generation'];
+                                {#let componentGroup = part['component_group'];#}
+                                let component = part['component'];
+                                let partGroup = part['part_group'];
+                                let url = `/catalogue/${part['model_url']}/${part['generation_url']}/${part['component_url']}/${part['part_group_url']}`;
+                                let li = `<li class="search-result"><a href="${url}">
+                                    <span class="part-code">${partCode}</span><span class="info">${model} | ${generation}</span>
+                                    <br>
+                                    <span class="part-name">${partName}</span>
+                                    <br>
+                                    <span class="part-path d-inline-block">${component} <i class="bi bi-chevron-right"></i> ${partGroup}</span>
+                                    <span class="hr-custom"></span>
+                                </a></li>`
+                                $('.search-results').append(li);
+                                {#${componentGroup} <i class="bi bi-chevron-right"></i> #}
+                            })
+                        }
+                    });
+                } else {
+                    isData = false;
+                    $('.search-results').fadeOut();
+                    $(".go-icon").removeClass("go-in");
+                }
+            });
+
+            search.focusout(function () {
+                {#$('.search-results').fadeOut();#}
+            });
+
+            $(".go-icon").click(function () {
+                $('#search').val(null);
+                $(".go-icon").removeClass("go-in");
+                $('.search-results').empty();
+            });
+
+            $(document).on('click', function (e) {
+                if ($(e.target).closest('.search-box').length === 0) {
+                    $('.search-results').fadeOut();
+                }
+            });
+        });
+
+    </script>
+{% endblock %}
